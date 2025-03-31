@@ -12,9 +12,9 @@ public class ScriptCreationWindow : EditorWindow
     private string _savePath = "Assets"; // 保存パス
     private int _templateIndex = 0; // テンプレートのインデックス
     private string[] _templates = new string[0]; // テンプレートの配列
-    private readonly string _templateFolderPath = "Assets/Script/ScriptTemplates";
+    private readonly string _templateFolderPath = "Assets/Scripts/Editor/ScriptTemplates";
     
-    [MenuItem("Creeping Red/Script Creation Window")]
+    [MenuItem("MyTool/Script Creation Window")]
     public static void ShowWindow()
     {
         // ウィンドウを表示
@@ -50,13 +50,8 @@ public class ScriptCreationWindow : EditorWindow
                 _savePath = folderPath;
             }
         }
-        
-        // タブのレイアウト
-        EditorGUILayout.BeginHorizontal();
 
         ShowScriptCreationGUI();
-
-        EditorGUILayout.EndHorizontal();
     }
 
     /// <summary>
