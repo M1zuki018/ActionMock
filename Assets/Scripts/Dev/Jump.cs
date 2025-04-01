@@ -22,4 +22,12 @@ public class Jump : MonoBehaviour
         }
         _index++;
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Test(); // キーボードからの発火
+        }
+    }
 }
