@@ -879,6 +879,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 060719e5b6784754f90afcf5ba4fc647, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _jumpDuration: 2.5
   _player: {fileID: 1753115645}
   _props:
   - {fileID: 1170619121}

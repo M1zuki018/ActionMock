@@ -7,6 +7,8 @@ using UnityEngine;
 /// </summary>
 public class Jump : MonoBehaviour
 {
+    [SerializeField] private float _jumpDuration = 1f;
+    
     [SerializeField] private Transform _player;
     [SerializeField] private List<GameObject> _props;
     [SerializeField] private List<GameObject> _skyProps;
@@ -36,7 +38,7 @@ public class Jump : MonoBehaviour
             ParabolicMove(
                 start: _player.position, 
                 end: endPos,
-                duration: 1f,
+                duration: _jumpDuration,
                 height: 0.8f + _playerHeight);
         }
         _index++;
