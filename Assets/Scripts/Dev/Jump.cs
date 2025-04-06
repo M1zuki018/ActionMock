@@ -12,10 +12,14 @@ public class Jump : MonoBehaviour
     [SerializeField] private Transform _player;
     [SerializeField] private List<GameObject> _props;
     [SerializeField] private List<GameObject> _skyProps;
+    [SerializeField] private List<GameObject> _lane1;
+    [SerializeField] private List<GameObject> _lane2;
     [SerializeField] private Ease _jumpEase;
     [SerializeField] private UseProp _useProp;
     private int _index = 0;
     private float _playerHeight = 2f;
+
+    private bool _isLane1Course;
     
     [MethodButtonInspector]
     public void Test()
@@ -41,7 +45,30 @@ public class Jump : MonoBehaviour
                 duration: _jumpDuration,
                 height: 0.8f + _playerHeight);
         }
+        else
+        {
+            Vector3 endPos = new Vector3();
+            
+            if (_isLane1Course)
+            {
+                endPos = _lane1[_index % 4].transform.position;
+            }
+            else
+            {
+                endPos = _lane2[_index % 4].transform.position;
+            }
+            
+            endPos.y += _playerHeight;
+            
+            ParabolicMove(
+                start: _player.position, 
+                end: endPos,
+                duration: _jumpDuration,
+                height: 0.8f + _playerHeight);
+        }
+        
         _index++;
+        Debug.Log(_index + ", " + _isLane1Course);
     }
 
     /// <summary>
@@ -62,6 +89,17 @@ public class Jump : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Test(); // キーボードからの発火
+        }
+
+        // レーン①か②を切り替える
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            _isLane1Course = true; // Dキーを押したらレーン1へ
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            _isLane1Course = false; // Aキーを押したらレーン2へ
         }
     }
 
