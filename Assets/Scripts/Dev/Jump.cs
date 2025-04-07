@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using UniRx;
 using UnityEngine;
 
 /// <summary>
@@ -11,60 +12,36 @@ public class Jump : MonoBehaviour
     
     [SerializeField] private Transform _player;
     [SerializeField] private List<GameObject> _props;
-    [SerializeField] private List<GameObject> _skyProps;
-    [SerializeField] private List<GameObject> _lane1;
-    [SerializeField] private List<GameObject> _lane2;
     [SerializeField] private Ease _jumpEase;
-    [SerializeField] private UseProp _useProp;
+    private ReactiveProperty<UseProp> _useProp = new ReactiveProperty<UseProp>(global::UseProp.Ground);
+    public ReactiveProperty<UseProp> UseProp => _useProp;
+    
     private int _index = 0;
     private float _playerHeight = 2f;
 
-    private bool _isLane1Course;
+    private bool _isLane1Course; // TODO: 失敗成功判定をここに
+    private List<int> _doubleTimeDurationNam = new List<int>{15};  
     
     [MethodButtonInspector]
     public void Test()
     {
-        // 使用するObjectを指定
-        var props = SetProp();
-        
         if (_index < _props.Count)
         {
-            Vector3 endPos = props[_index].transform.position;
+            if (_index == 8 || _index == 10)
+            {
+                SlideMove(_props[_index].transform);
+                _index++;
+                Debug.Log(_index + ", " + _isLane1Course);
+                return;
+            }
+            
+            Vector3 endPos = _props[_index].transform.position;
             endPos.y += _playerHeight;
             
             ParabolicMove(
                 start: _player.position, 
                 end: endPos,
-                duration: _jumpDuration,
-                height: 0.8f + _playerHeight);
-        }
-        else
-        {
-            Vector3 endPos = new Vector3();
-            
-            if (_isLane1Course)
-            {
-                if (_index == 8 || _index == 10)
-                {
-                    SlideMove(_lane1[_index - 4].transform);
-                    _index++;
-                    Debug.Log(_index + ", " + _isLane1Course);
-                    return;
-                }
-                
-                endPos = _lane1[_index - 4].transform.position;
-            }
-            else
-            {
-                endPos = _lane2[_index % 4].transform.position;
-            }
-            
-            endPos.y += _playerHeight;
-            
-            ParabolicMove(
-                start: _player.position, 
-                end: endPos,
-                duration: _index != 15 ? _jumpDuration : _jumpDuration * 2, // 15個目のオブジェクトなら二倍の時間かけて跳ぶ
+                duration: DoubleNamCheck() ? _jumpDuration : _jumpDuration * 2, // 15個目のオブジェクトなら二倍の時間かけて跳ぶ,
                 height: 0.8f + _playerHeight);
         }
         
@@ -74,22 +51,8 @@ public class Jump : MonoBehaviour
         // 空中ブロックへ
         if (_index == 15)
         {
-            _useProp = UseProp.Sky;
-            _index = 0; // リセット
+            _useProp.Value = global::UseProp.Sky;
         }
-    }
-
-    /// <summary>
-    /// Enumに合わせて使用するPropを切り替える
-    /// </summary>
-    private List<GameObject> SetProp()
-    {
-        var props = _useProp switch
-        {
-            UseProp.Ground => _props,
-            UseProp.Sky => _skyProps,
-        };
-        return props;
     }
 
     private void Update()
@@ -111,6 +74,19 @@ public class Jump : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 二倍時間をかけて跳ぶオブジェクトのリストに登録されているか判定する
+    /// </summary>
+    private bool DoubleNamCheck()
+    {
+        foreach (var nam in _doubleTimeDurationNam)
+        {
+            if(nam == _index) return false;
+        }
+        
+        return true;
+    }
+    
     /// <summary>
     /// 滑りあがる動き
     /// </summary>
