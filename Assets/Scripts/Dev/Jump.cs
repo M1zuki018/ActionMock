@@ -51,7 +51,15 @@ public class Jump : MonoBehaviour
             
             if (_isLane1Course)
             {
-                endPos = _lane1[_index % 4].transform.position;
+                if (_index == 8 || _index == 10)
+                {
+                    SlideMove(_lane1[_index - 4].transform);
+                    _index++;
+                    Debug.Log(_index + ", " + _isLane1Course);
+                    return;
+                }
+                
+                endPos = _lane1[_index - 4].transform.position;
             }
             else
             {
@@ -101,6 +109,19 @@ public class Jump : MonoBehaviour
         {
             _isLane1Course = false; // Aキーを押したらレーン2へ
         }
+    }
+
+    /// <summary>
+    /// 滑りあがる動き
+    /// </summary>
+    private void SlideMove(Transform target)
+    {
+        Vector3 startPos = target.position + Vector3.forward * -2;
+        Vector3 endPos = startPos + Vector3.up * 10 + Vector3.forward * -2;
+        
+        Vector3[] path = { startPos, endPos };
+        _player.DOPath(path, _jumpDuration / 2f,  PathType.Linear)
+            .SetEase(Ease.Linear); 
     }
 
     /// <summary>
