@@ -70,12 +70,12 @@ public class Jump : MonoBehaviour
         
         _index++;
         Debug.Log(_index + ", " + _isLane1Course);
-
+        
         // 空中ブロックへ
-        if (_index == 16)
+        if (_index == 15)
         {
             _useProp = UseProp.Sky;
-            SetProp();
+            _index = 0; // リセット
         }
     }
 
