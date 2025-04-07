@@ -29,13 +29,6 @@ public class Jump : MonoBehaviour
         
         if (_index < _props.Count)
         {
-            /*
-            // プレイヤーの座標を次のプロップのポジションに移動させる
-            Vector3 vector = _props[_index].transform.position;
-            vector.y += 2; // プレイヤーの高さを足している
-            _player.position = vector;
-            */
-            
             Vector3 endPos = props[_index].transform.position;
             endPos.y += _playerHeight;
             
@@ -71,12 +64,19 @@ public class Jump : MonoBehaviour
             ParabolicMove(
                 start: _player.position, 
                 end: endPos,
-                duration: _jumpDuration,
+                duration: _index != 15 ? _jumpDuration : _jumpDuration * 2, // 15個目のオブジェクトなら二倍の時間かけて跳ぶ
                 height: 0.8f + _playerHeight);
         }
         
         _index++;
         Debug.Log(_index + ", " + _isLane1Course);
+
+        // 空中ブロックへ
+        if (_index == 16)
+        {
+            _useProp = UseProp.Sky;
+            SetProp();
+        }
     }
 
     /// <summary>
@@ -120,8 +120,7 @@ public class Jump : MonoBehaviour
         Vector3 endPos = startPos + Vector3.up * 10 + Vector3.forward * -2;
         
         Vector3[] path = { startPos, endPos };
-        _player.DOPath(path, _jumpDuration / 2f,  PathType.Linear)
-            .SetEase(Ease.Linear); 
+        _player.DOPath(path, _jumpDuration / 2f, PathType.Linear).SetEase(Ease.Linear);
     }
 
     /// <summary>
