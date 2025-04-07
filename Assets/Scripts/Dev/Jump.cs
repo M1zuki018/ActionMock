@@ -82,6 +82,7 @@ public class Jump : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A))
             {
                 _isLane1Course = false; // Aキーを押したらレーン2へ
+                _uiHelper.RedFlash();
             }
             
             return;
