@@ -17,15 +17,19 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// カメラを変更する
     /// </summary>
-    private void ChangeCamera(UseProp propEnum)
+    private void ChangeCamera(UseCamera cameraEnum)
     {
-        if (propEnum == UseProp.Ground)
+        if (cameraEnum == UseCamera.SideView)
         {
             ActiveCamera(0);
         }
-        else if (propEnum == UseProp.Sky)
+        else if (cameraEnum == UseCamera.ThirdPerson)
         {
             ActiveCamera(1);
+        }
+        else
+        {
+            ActiveCamera(2);
         }
     }
 

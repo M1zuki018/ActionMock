@@ -8,13 +8,14 @@ using UnityEngine;
 /// </summary>
 public class Jump : MonoBehaviour
 {
+    [SerializeField] private UIHelper _uiHelper;
     [SerializeField] private float _jumpDuration = 1f;
     
     [SerializeField] private Transform _player;
     [SerializeField] private List<GameObject> _props;
     [SerializeField] private Ease _jumpEase;
-    private ReactiveProperty<UseProp> _useProp = new ReactiveProperty<UseProp>(global::UseProp.Ground);
-    public ReactiveProperty<UseProp> UseProp => _useProp;
+    private ReactiveProperty<UseCamera> _useProp = new ReactiveProperty<UseCamera>(UseCamera.SideView);
+    public ReactiveProperty<UseCamera> UseProp => _useProp;
     
     private int _index = 0;
     private float _playerHeight = 2f;
@@ -47,30 +48,48 @@ public class Jump : MonoBehaviour
         
         _index++;
         Debug.Log(_index + ", " + _isLane1Course);
-        
-        // 空中ブロックへ
-        if (_index == 15)
+
+        if (_index == 12) // 分岐
         {
-            _useProp.Value = global::UseProp.Sky;
+            _useProp.Value = UseCamera.FirstPerson;
+        }
+
+        if (_index == 5)
+        {
+            _useProp.Value = UseCamera.SideView;
+        }
+        
+        if (_index == 16) // 空中ブロックへ移行
+        {
+            _useProp.Value = UseCamera.ThirdPerson;
         }
     }
 
     private void Update()
     {
+        if (_index == 4)
+        {
+            _uiHelper.ShowText();
+            
+            // レーン①か②を切り替える
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                _isLane1Course = true; // Dキーを押したらレーン1へ
+                Test();
+                _uiHelper.HideText();
+            }
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                _isLane1Course = false; // Aキーを押したらレーン2へ
+            }
+            
+            return;
+        }
+        
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Test(); // キーボードからの発火
-        }
-
-        // レーン①か②を切り替える
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            _isLane1Course = true; // Dキーを押したらレーン1へ
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            _isLane1Course = false; // Aキーを押したらレーン2へ
         }
     }
 
@@ -118,10 +137,11 @@ public class Jump : MonoBehaviour
 }
 
 /// <summary>
-/// 使用するプロップリスト
+/// 使用するカメラの列挙型
 /// </summary>
-public enum UseProp
+public enum UseCamera
 {
-    Ground,
-    Sky,
+    SideView,
+    ThirdPerson,
+    FirstPerson,
 }
