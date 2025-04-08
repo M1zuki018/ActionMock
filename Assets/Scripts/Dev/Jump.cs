@@ -65,6 +65,13 @@ public class Jump : MonoBehaviour
         }
     }
 
+    public void ButtonMethod()
+    {
+        _isLane1Course = true;
+        Test();
+        _uiHelper.HideText();
+    }
+    
     private void Update()
     {
         if (_index == 4)
