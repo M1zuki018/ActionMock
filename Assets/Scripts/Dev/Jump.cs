@@ -17,11 +17,18 @@ public class Jump : MonoBehaviour
     private ReactiveProperty<UseCamera> _useProp = new ReactiveProperty<UseCamera>(UseCamera.SideView);
     public ReactiveProperty<UseCamera> UseProp => _useProp;
     
+    private Animator _animator;
+    
     private int _index = 0;
     private float _playerHeight = 2f;
 
     private bool _isLane1Course; // TODO: 失敗成功判定をここに
-    private List<int> _doubleTimeDurationNam = new List<int>{15};  
+    private List<int> _doubleTimeDurationNam = new List<int>{15};
+
+    private void Start()
+    {
+        _animator = _player.gameObject.GetComponent<Animator>();
+    }
     
     [MethodButtonInspector]
     public void Test()
@@ -46,6 +53,7 @@ public class Jump : MonoBehaviour
                 height: 0.8f + _playerHeight);
         }
         
+        PlayAnim();
         _index++;
         Debug.Log(_index + ", " + _isLane1Course);
 
@@ -70,6 +78,18 @@ public class Jump : MonoBehaviour
         _isLane1Course = true;
         Test();
         _uiHelper.HideText();
+    }
+
+    private void PlayAnim()
+    {
+        if (_index == 15)
+        {
+            _animator.SetTrigger("JumpOver");
+        }
+        else
+        {
+            _animator.SetTrigger("Jump");
+        }
     }
     
     private void Update()
@@ -132,6 +152,7 @@ public class Jump : MonoBehaviour
     private void ParabolicMove(Vector3 start, Vector3 end, float duration, float height)
     {
         _player.position = start;
+        end.x += 0;
         
         // 中間点を計算
         Vector3 midPoint = (start + end) / 2f;
