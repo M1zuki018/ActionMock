@@ -72,3 +72,14 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Assets/Model/Eve By J.Gonzales.fbx
+Assets/Model/Eve By J.Gonzales.fbx.meta
+Assets/Model/SpacePirate_M.mat
+Assets/Model/SpacePirate_M.mat.meta
+Assets/Model/Texture.meta
+Assets/Model/Texture/SpacePirate_diffuse.png
+Assets/Model/Texture/SpacePirate_diffuse.png.meta
+Assets/Model/Texture/SpacePirate_normal.png
+Assets/Model/Texture/SpacePirate_normal.png.meta
+Assets/Model/Texture/SpacePirate_specular.png
+Assets/Model/Texture/SpacePirate_specular.png.meta
