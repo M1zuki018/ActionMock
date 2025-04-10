@@ -11,6 +11,10 @@ public class Jump : MonoBehaviour
     [SerializeField] private UIHelper _uiHelper;
     [SerializeField] private float _jumpDuration = 1f;
     
+    [Header("音")]
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _jumpSound;
+    
     [SerializeField] private Transform _player;
     [SerializeField] private List<GameObject> _props;
     [SerializeField] private Ease _jumpEase;
@@ -52,6 +56,7 @@ public class Jump : MonoBehaviour
                 duration: DoubleNamCheck() ? _jumpDuration : _jumpDuration * 2, // 15個目のオブジェクトなら二倍の時間かけて跳ぶ,
                 height: 0.8f + _playerHeight);
         }
+        
         
         PlayAnim();
         _index++;
