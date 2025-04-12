@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UniRx;
@@ -28,14 +29,21 @@ public class Jump : MonoBehaviour
 
     private bool _isLane1Course; // TODO: 失敗成功判定をここに
     private List<int> _doubleTimeDurationNam = new List<int>{15};
+    
+    public event Action OnPerformance; // パフォーマンスシーン
 
     private void Start()
     {
         _animator = _player.gameObject.GetComponent<Animator>();
     }
-    
+
     [MethodButtonInspector]
-    public void Test()
+    private void A()
+    {
+        OnPerformance?.Invoke();
+    }
+    
+    private void Test()
     {
         if (_index < _props.Count)
         {
@@ -123,6 +131,11 @@ public class Jump : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Test(); // キーボードからの発火
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            A(); // キーボードからの発火
         }
     }
 

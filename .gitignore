@@ -2378,3 +2378,140 @@ Assets/VRM10/vrmlib/Tests/ModelTests.cs
 Assets/VRM10/vrmlib/Tests/ModelTests.cs.meta
 Assets/VRM10/vrmlib/Tests/VrmLib.Tests.asmdef
 Assets/VRM10/vrmlib/Tests/VrmLib.Tests.asmdef.meta
+Assets/Anim/Eve By J.Gonzales@Idle.fbx
+Assets/Anim/Eve By J.Gonzales@Idle.fbx.meta
+Assets/Anim/Eve By J.Gonzales@Standing Clap.fbx
+Assets/Anim/Eve By J.Gonzales@Standing Clap.fbx.meta
+Assets/Anim/New Animation.anim
+Assets/Anim/New Animation.anim.meta
+Assets/Anim/peaple.controller
+Assets/Anim/peaple.controller.meta
+Assets/Model/GameObject.prefab
+Assets/Model/GameObject.prefab.meta
+Assets/Model/Kotoha.avatar.asset
+Assets/Model/Kotoha.avatar.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/_vrm1_.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/_vrm1_.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/aa.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/aa.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/angry.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/angry.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/blink.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/blink.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/blinkLeft.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/blinkLeft.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/blinkRight.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/blinkRight.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/ee.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/ee.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/happy.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/happy.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/ih.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/ih.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/lookDown.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/lookDown.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/lookLeft.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/lookLeft.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/lookRight.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/lookRight.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/lookUp.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/lookUp.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/neutral.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/neutral.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/oh.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/oh.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/ou.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/ou.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/relaxed.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/relaxed.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/sad.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/sad.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Assets/surprised.asset
+Assets/Model/VRM/Kotoha.vrm1.Assets/surprised.asset.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_Body_00_SKIN (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_Body_00_SKIN (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_EyeHighlight_00_EYE (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_EyeHighlight_00_EYE (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_EyeIris_00_EYE (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_EyeIris_00_EYE (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_EyeWhite_00_EYE (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_EyeWhite_00_EYE (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_Face_00_SKIN (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_Face_00_SKIN (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_FaceBrow_00_FACE (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_FaceBrow_00_FACE (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_FaceEyeline_00_FACE (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_FaceEyeline_00_FACE (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_FaceMouth_00_FACE (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_FaceMouth_00_FACE (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_HairBack_00_HAIR (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_00_HairBack_00_HAIR (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_Hair_00_HAIR (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_000_Hair_00_HAIR (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_008_01_Shoes_01_CLOTH_01 (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_008_01_Shoes_01_CLOTH_01 (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_008_01_Shoes_01_CLOTH_02 (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_008_01_Shoes_01_CLOTH_02 (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_010_01_Onepiece_00_CLOTH_01 (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_010_01_Onepiece_00_CLOTH_01 (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_010_01_Onepiece_00_CLOTH_02 (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_010_01_Onepiece_00_CLOTH_02 (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_010_01_Onepiece_00_CLOTH_03 (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_010_01_Onepiece_00_CLOTH_03 (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_010_01_Onepiece_00_CLOTH_04 (Instance).mat
+Assets/Model/VRM/Kotoha.vrm1.Materials/N00_010_01_Onepiece_00_CLOTH_04 (Instance).mat.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_01.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_01.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_02.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_02.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_03.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_03.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_04.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_04.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_05.normal.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_05.normal.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_06.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_06.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_07.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_07.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_09.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_09.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_10.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_10.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_11.normal.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_11.normal.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_12.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_12.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_13.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_13.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_14.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_14.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_15.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_15.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_16.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_16.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_17.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_17.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_18.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_18.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_19.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_19.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/_20.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/_20.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/MatcapWarp.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/MatcapWarp.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/N00_000_00_Face_00_out.linear.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/N00_000_00_Face_00_out.linear.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/N00_000_00_HairBack_00_nml.normal.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/N00_000_00_HairBack_00_nml.normal.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/N00_000_Hair_00_nml.normal.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/N00_000_Hair_00_nml.normal.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/Shader_NoneBlack.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/Shader_NoneBlack.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/Shader_NoneNormal.normal.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/Shader_NoneNormal.normal.png.meta
+Assets/Model/VRM/Kotoha.vrm1.Textures/thumbnail__VRM10.png
+Assets/Model/VRM/Kotoha.vrm1.Textures/thumbnail__VRM10.png.meta
