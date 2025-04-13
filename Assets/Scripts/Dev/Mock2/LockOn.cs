@@ -9,6 +9,7 @@ public class LockOn : MonoBehaviour
 {
     [SerializeField] private Transform _lockOnIcon;
     [SerializeField] private GameObject _bulletPrefab;
+    [SerializeField] private Transform _mazzle;
     private List<Transform> _allTargets = new List<Transform>();
     private Transform _currentTarget; // 現在のターゲット
     private int _targetIndex = 0;
@@ -45,13 +46,16 @@ public class LockOn : MonoBehaviour
     /// </summary>
     private void TargetBroken()
     {
-        SearchTarget();
+        // 銃弾を生成
+        var bullet = Instantiate(_bulletPrefab, _mazzle.position, Quaternion.identity);
+        var component = bullet.GetComponent<Bullet>();
+        component.Setup(this, _currentTarget);
     }
     
     /// <summary>
     /// 次のターゲットを探す
     /// </summary>
-    private void SearchTarget()
+    public void SearchTarget()
     {
         _targetIndex++;
         if (_targetIndex < _allTargets.Count)
