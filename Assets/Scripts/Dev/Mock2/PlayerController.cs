@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -9,11 +8,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField,Comment("前進するスピ―ド")] private float _forwardSpeed = 10f;
     [SerializeField,Comment("ジャンプにかける秒数")] private float _jumpDuration = 3f;
     [SerializeField] private Transform[] _paths; // Prop
-    private Transform _currentPath; // 現在目指しているPropの位置
-    private int _currentPathIndex = 0;
     
     private Animator _animator;
     private Rigidbody _rb;
+    
+    private Transform _currentPath; // 現在目指しているPropの位置
+    private int _currentPathIndex = 0;
+    private float _pathTransitionTimer = 0f;
+    private Vector3 _startPosition;
+    private bool _isTransitioning = false;
 
     private void Awake()
     {
@@ -27,33 +30,52 @@ public class PlayerController : MonoBehaviour
     {
         // 自動前進
         // TODO: フローゾーンなどで速度変化が突く場合ここでスピードを変える分岐を書く
-        transform.position += transform.forward * _forwardSpeed * Time.deltaTime;
-
         if (_currentPath != null)
         {
-            // ベクトルを求める
-            Vector3 directionToNode = (_currentPath.position - transform.position).normalized;
-            directionToNode.y = 0f; // 並行移動のみ。上下の移動は自動には行わないようにしてみる
-            
+            if (!_isTransitioning)
+            {
+                // 新しい経路への遷移開始
+                _startPosition = transform.position;
+                _pathTransitionTimer = 0f;
+                _isTransitioning = true;
+            }
+        
+            // 240BPMの一小節は1秒
+            float oneBarDuration = 60f / 200f * 4f;  // 1分 / BPM * 4拍
+        
+            // タイマー更新
+            _pathTransitionTimer += Time.deltaTime;
+            float t = Mathf.Clamp01(_pathTransitionTimer / oneBarDuration);
+        
+            // 線形補間で移動
+            transform.position = Vector3.Lerp(_startPosition, _currentPath.position, t);
+        
             // 回転
+            Vector3 directionToNode = (_currentPath.position - transform.position).normalized;
             if (directionToNode != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(directionToNode);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2f * Time.deltaTime); // 徐々に
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2f * Time.deltaTime);
             }
-            
-            // 目標地点更新
-            if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), 
-                    new Vector3(_currentPath.position.x, 0, _currentPath.position.z)) < 5f)
+        
+            // 一小節経過または十分近づいたら次の目標地点へ
+            if (t >= 1.0f || Vector3.Distance(transform.position, _currentPath.position) < 0.1f)
             {
-                _currentPathIndex++;
-                _currentPath = _paths[_currentPathIndex];
+                NextPath();
+                _isTransitioning = false;
             }
         }
-        
-        // 平行移動
-        Vector3 right = Vector3.Cross(Vector3.up, transform.forward).normalized;
-        Vector3 horizontalMove = right * _forwardSpeed * Time.deltaTime;
-        transform.position += horizontalMove;
+    }
+
+    /// <summary>
+    /// 目的地を更新する
+    /// </summary>
+    private void NextPath()
+    {
+        _currentPathIndex++;
+        if (_currentPathIndex < _paths.Length)
+        {
+            _currentPath = _paths[_currentPathIndex];
+        }
     }
 }
