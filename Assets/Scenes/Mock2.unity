@@ -5496,6 +5496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46a413bf00f0ac24882c050b2c7f2031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameManager2: {fileID: 693366220}
   _lockOnIcon: {fileID: 2144520000}
   _bulletPrefab: {fileID: 2383282923278351472, guid: cab345b14454d3d41a5a9dd8625ad8c4, type: 3}
   _mazzle: {fileID: 1753115645}

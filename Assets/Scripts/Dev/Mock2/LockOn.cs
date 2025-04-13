@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public class LockOn : MonoBehaviour
 {
+    [SerializeField] private GameManager2 _gameManager2;
     [SerializeField] private Transform _lockOnIcon;
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private Transform _mazzle;
@@ -57,6 +58,8 @@ public class LockOn : MonoBehaviour
     /// </summary>
     public void SearchTarget()
     {
+        _gameManager2.Score.Value += 100;
+        
         _targetIndex++;
         if (_targetIndex < _allTargets.Count)
         {
@@ -66,6 +69,5 @@ public class LockOn : MonoBehaviour
         {
             _lockOnIcon.gameObject.SetActive(false); // ターゲットがいなくなったらアイコンを非表示にする
         }
-        
     }
 }
