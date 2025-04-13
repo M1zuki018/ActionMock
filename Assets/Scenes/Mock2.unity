@@ -1010,12 +1010,12 @@ MonoBehaviour:
   PanAxis:
     Value: 0
     Center: 0
-    Range: {x: -180, y: 180}
-    Wrap: 1
+    Range: {x: -70, y: 70}
+    Wrap: 0
     Recentering:
-      Enabled: 0
-      Wait: 1
-      Time: 2
+      Enabled: 1
+      Wait: 3.89
+      Time: 4.88
     Restrictions: 0
   TiltAxis:
     Value: 0
@@ -1024,7 +1024,7 @@ MonoBehaviour:
     Wrap: 0
     Recentering:
       Enabled: 0
-      Wait: 1
+      Wait: 0
       Time: 2
     Restrictions: 0
 --- !u!114 &132607650
@@ -1757,7 +1757,7 @@ Transform:
   m_GameObject: {fileID: 284139181}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -80.5, y: 31.1, z: -8.7}
+  m_LocalPosition: {x: -80.5, y: 31.1, z: -9.2}
   m_LocalScale: {x: 5.14394, y: 14.22, z: 2.890746}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5483,6 +5483,7 @@ GameObject:
   - component: {fileID: 693366220}
   - component: {fileID: 693366221}
   - component: {fileID: 693366222}
+  - component: {fileID: 693366223}
   m_Layer: 0
   m_Name: System
   m_TagString: Untagged
@@ -5551,6 +5552,19 @@ MonoBehaviour:
   _lockOnIcon: {fileID: 2144520000}
   _bulletPrefab: {fileID: 2383282923278351472, guid: cab345b14454d3d41a5a9dd8625ad8c4, type: 3}
   _mazzle: {fileID: 1753115645}
+--- !u!114 &693366223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693366215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d63e87b95d98e3f4c90096d649a31940, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enemyPrefab: {fileID: 2249401653679465037, guid: 77ed5d926b299cf48b073f4dec2095b7, type: 3}
 --- !u!1 &695649632 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3293154734407445541, guid: 4424c1ff10383e448be8e709503944c8, type: 3}
@@ -13089,6 +13103,7 @@ MonoBehaviour:
   - {fileID: 1844802010}
   - {fileID: 2010570738}
   - {fileID: 1484641264}
+  _enemyGenerator: {fileID: 693366223}
 --- !u!54 &1753115649
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -13956,7 +13971,7 @@ Transform:
   m_GameObject: {fileID: 1917145986}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -52.41, y: 13.2, z: -8.84}
+  m_LocalPosition: {x: -52.41, y: 13.2, z: -9.9}
   m_LocalScale: {x: 5.14394, y: 14.22, z: 2.890746}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -20,6 +20,11 @@ public class LockOn : MonoBehaviour
     {
         _camera = Camera.main;
         
+        SetTarget();
+    }
+
+    private void SetTarget()
+    {
         // すべての Target タグを持つオブジェクトを取得し、距離でソートして _allTargets に格納
         Vector3 playerPosition = transform.position;
     
