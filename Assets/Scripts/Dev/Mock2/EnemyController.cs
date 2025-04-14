@@ -149,6 +149,7 @@ public class EnemyController : MonoBehaviour
     {
         // 弾をインスタンス化
         GameObject bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
+        bullet.transform.localScale = Vector3.one / 2;
     
         // BulletControllerをアタッチ
         BulletController bulletController = bullet.GetComponent<BulletController>();

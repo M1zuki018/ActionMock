@@ -76,6 +76,7 @@ public class Effect : MonoBehaviour
         {
             _shine.DOFade(isEnemyTurn ? 0 : 0.1f, 0.3f); // フレーム
             SwitchTurnEffect(isEnemyTurn).Forget(); // ターン切り替え時のカメラエフェクト
+            _comboContainer.DOScale(isEnemyTurn ? 1 : 0f, 0.3f); // コンボは回避パートでのみ表示
         });
         
         // コンボ数の書き換え　購読解除処理を追加して
@@ -129,6 +130,11 @@ public class Effect : MonoBehaviour
         
         // シーケンス実行
         _comboSequence.Play();
+        
+        _comboSequence.OnComplete(() =>
+        {
+            _comboContainer.DOScale(_playerCon.IsEnemyTurn.Value ? 1 : 0f, 0.3f);
+        });
     }
 
     /// <summary>
