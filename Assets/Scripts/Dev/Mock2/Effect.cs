@@ -15,11 +15,16 @@ public class Effect : MonoBehaviour
     [SerializeField] private Volume _volume;
     
     [SerializeField] private Image _shine;
+    
     [Header("コンボ")]
     [SerializeField] private Text _comboText;
     [SerializeField] private RectTransform _comboContainer;
     [SerializeField] private float _comboPopDuration = 0.3f;
+    
+    [Header("評価")]
     [SerializeField] private Text _evaluationText;
+    [SerializeField] private CanvasGroup _evaluationGroup;
+    [SerializeField] private float _evaluationFadeTime =  0.5f;
     
     // ポストプロセスエフェクト用
     private ChromaticAberration _chromaticAberration;
@@ -28,12 +33,13 @@ public class Effect : MonoBehaviour
     private ColorAdjustments _colorAdjustments;
     
     private Sequence _comboSequence;
+    private Sequence _evaluationSequence;
     private IDisposable _disposable;
     private IDisposable _comboSubscribe;
     
     // DOTweenアニメーション用のSequenceを保持
     private Dictionary<string, Sequence> _tweenSequences = new Dictionary<string, Sequence>();
-    
+
     private void Start()
     {
         InitializePostProcessing();
@@ -46,7 +52,12 @@ public class Effect : MonoBehaviour
     /// </summary>
     private void InitializeUI()
     {
-        _comboText.DOFade(0, 0.2f);
+        // 評価テキストの初期状態
+        if (_evaluationGroup != null)
+        {
+            _evaluationGroup.alpha = 0f;
+        }
+        
         // コンボテキストの初期状態
         if (_comboContainer != null)
         {
@@ -63,7 +74,7 @@ public class Effect : MonoBehaviour
         _disposable = _playerCon.IsEnemyTurn.Subscribe(isEnemyTurn =>
         {
             _shine.DOFade(isEnemyTurn ? 0 : 0.1f, 0.3f); // フレーム
-            // TODO: GlobalVolumeを使った色収差エフェクト
+            SwitchTurnEffect(isEnemyTurn).Forget(); // ターン切り替え時のカメラエフェクト
         });
         
         // コンボ数の書き換え　購読解除処理を追加して
@@ -119,6 +130,42 @@ public class Effect : MonoBehaviour
         _comboSequence.Play();
     }
 
+    /// <summary>
+    /// ターン切り替え時のエフェクト
+    /// </summary>
+    private async UniTask SwitchTurnEffect(bool isEnemyTurn)
+    {
+        if (_chromaticAberration != null)
+        {
+            // 色収差エフェクトを一瞬強めてから元に戻す
+            DOTween.To(() => _chromaticAberration.intensity.value, 
+                x => _chromaticAberration.intensity.value = x, 
+                1f, 0.2f).SetEase(Ease.OutQuad);
+            
+            await UniTask.Delay(200);
+            
+            DOTween.To(() => _chromaticAberration.intensity.value, 
+                x => _chromaticAberration.intensity.value = x, 
+                isEnemyTurn ? 0.3f : 0f, 0.5f).SetEase(Ease.InOutQuad);
+        }
+        
+        if (_vignette != null)
+        {
+            // ビネットエフェクトの強さを変更
+            DOTween.To(() => _vignette.intensity.value, 
+                x => _vignette.intensity.value = x, 
+                isEnemyTurn ? 0.4f : 0.2f, 0.5f).SetEase(Ease.InOutQuad);
+        }
+        
+        // タイムスケールを一瞬変更して時間の流れを演出
+        Time.timeScale = 0.7f;
+        await UniTask.Delay(150, ignoreTimeScale: true);
+        DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1f, 0.3f).SetEase(Ease.OutQuad);
+        
+        // 画面のフラッシュ効果
+        CreateScreenFlash(isEnemyTurn ? Color.red.WithAlpha(0.3f) : Color.blue.WithAlpha(0.3f));
+    }
+    
     /// <summary>
     /// PERFECT評価時のエフェクト
     /// </summary>
@@ -259,21 +306,45 @@ public class Effect : MonoBehaviour
     /// </summary>
     public void EvaluationText(EvaluationEnum evaluation)
     {
-        if (evaluation == EvaluationEnum.Perfect)
+        // 既存のアニメーションをキル
+        _evaluationSequence?.Kill();
+        
+        // 評価に応じた色と効果を設定
+        switch (evaluation)
         {
-            _evaluationText.color = Color.yellow;
-        }
-        else if (evaluation == EvaluationEnum.Safe)
-        {
-            _evaluationText.color = Color.cyan;
-        }
-        else
-        {
-            _evaluationText.color = Color.gray;
+            case EvaluationEnum.Perfect:
+                _evaluationText.color = Color.yellow;
+                _evaluationText.text = "PERFECT!";
+                PlayPerfectEffect().Forget();
+                break;
+            case EvaluationEnum.Safe:
+                _evaluationText.color = Color.cyan;
+                _evaluationText.text = "SAFE";
+                PlaySafeEffect().Forget();
+                break;
+            default: // Miss
+                _evaluationText.color = Color.gray;
+                _evaluationText.text = "MISS";
+                PlayMissEffect().Forget();
+                break;
         }
         
-        _evaluationText.text = evaluation.ToString();
-        _evaluationText.DOFade(1, 0.2f); // テキスト表示
+        // 評価テキストのアニメーション
+        _evaluationSequence = DOTween.Sequence();
+        
+        // フェードインして拡大
+        _evaluationSequence.Append(_evaluationGroup.DOFade(1f, _evaluationFadeTime * 0.3f));
+        _evaluationSequence.Join(_evaluationText.transform.DOScale(1.3f, _evaluationFadeTime * 0.3f).SetEase(Ease.OutBack));
+        
+        // 少し維持
+        _evaluationSequence.AppendInterval(_evaluationFadeTime * 0.4f);
+        
+        // フェードアウト
+        _evaluationSequence.Append(_evaluationGroup.DOFade(0f, _evaluationFadeTime * 0.3f));
+        _evaluationSequence.Join(_evaluationText.transform.DOScale(1f, _evaluationFadeTime * 0.3f));
+        
+        // シーケンス実行
+        _evaluationSequence.Play();
     }
 
  
