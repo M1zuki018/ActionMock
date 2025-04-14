@@ -1,6 +1,7 @@
 using System;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _actionCooldown = 0.5f;
     private float _lastActionTime = -10f; // 初期値を負の値にして、ゲーム開始直後からアクションができるようにする
 
-    public ReactiveProperty<bool> IsEnemyTrun = new ReactiveProperty<bool>(true);
+    [FormerlySerializedAs("IsEnemyTrun")] public ReactiveProperty<bool> IsEnemyTurn = new ReactiveProperty<bool>(true);
     
     private Animator _animator;
     private Rigidbody _rb;
@@ -266,8 +267,8 @@ public class PlayerController : MonoBehaviour
         // 8小節ごとにターン切り替え
         if (_currentPathIndex % 8 == 7)
         {
-            IsEnemyTrun.Value = !IsEnemyTrun.Value; // 回避パートとアタックパートを入れ替える
-            Debug.LogWarning(IsEnemyTrun.Value ? "敵のターン" : "自分のターン");
+            IsEnemyTurn.Value = !IsEnemyTurn.Value; // 回避パートとアタックパートを入れ替える
+            Debug.LogWarning(IsEnemyTurn.Value ? "敵のターン" : "自分のターン");
         }
             
         _currentPathIndex++;

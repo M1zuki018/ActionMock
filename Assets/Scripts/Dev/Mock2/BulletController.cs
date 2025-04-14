@@ -6,7 +6,7 @@ using UnityEngine;
 public class BulletController : MonoBehaviour
 {
     private Transform _player;
-    private float _speed = 10f;
+    private float _speed = 50f;
     private float _followDistance = 5f; // この距離以下になると追尾をやめて直線移動
     private bool _isFollowing = true;
     private Vector3 _direction;

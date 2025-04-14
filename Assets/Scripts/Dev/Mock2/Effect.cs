@@ -21,7 +21,7 @@ public class Effect : MonoBehaviour
     private void Start()
     {
        // エネミーターン＝回避パートで光のフレームを非表示、攻撃パートで光のフレームを表示。
-        _disposable = _playerCon.IsEnemyTrun.Subscribe(isEnemyTurn =>
+        _disposable = _playerCon.IsEnemyTurn.Subscribe(isEnemyTurn =>
         {
             _shine.DOFade(isEnemyTurn ? 0 : 0.1f, 0.3f); // フレーム
             // TODO: GlobalVolumeを使った色収差エフェクト

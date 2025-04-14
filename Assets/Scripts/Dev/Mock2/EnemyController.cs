@@ -18,6 +18,7 @@ public class EnemyController : MonoBehaviour
     private float _randomTimer;
     private PlayerController _playerCon;
     private IDisposable _playerDisposable;
+    private bool _isFirst;
 
     private void Awake()
     {
@@ -26,7 +27,15 @@ public class EnemyController : MonoBehaviour
     
     private void Start()
     {
-        _playerDisposable = _playerCon.IsEnemyTrun.Subscribe(_ => Attack()); // 自分のターンの時に攻撃を行う
+        _playerDisposable = _playerCon.IsEnemyTurn.Subscribe(isEnemyTurn =>
+        {
+            if (isEnemyTurn) 
+            {
+                _isFirst = true;
+                Attack(); // 自分のターンの時に攻撃を行う
+            }
+        }); 
+        
         GenerateNewRandomOffset(); // 初期のランダムオフセットを設定
     }
     
@@ -106,15 +115,22 @@ public class EnemyController : MonoBehaviour
         // 弾の生成タイミングを設定（最初の2小節で弾を召喚）
         // 1小節目: 1・2・3・休
         await SpawnBulletWithDelay(beatInterval * 0); // 1拍目
-        await SpawnBulletWithDelay(beatInterval * 1); // 2拍目
-        await SpawnBulletWithDelay(beatInterval * 2); // 3拍目
-        // 休符
-    
+        await SpawnBulletWithDelay(beatInterval); // 2拍目
+        await SpawnBulletWithDelay(beatInterval); // 3拍目
+    　　await UniTask.WaitForSeconds(beatInterval); // 休符
         // 2小節目: 1・2・3・休
-        await SpawnBulletWithDelay(beatInterval * 4); // 1拍目
-        await SpawnBulletWithDelay(beatInterval * 5); // 2拍目
-        await SpawnBulletWithDelay(beatInterval * 6); // 3拍目
-        // 休符
+        await SpawnBulletWithDelay(beatInterval); // 1拍目
+        await SpawnBulletWithDelay(beatInterval); // 2拍目
+        await SpawnBulletWithDelay(beatInterval); // 3拍目
+        await UniTask.WaitForSeconds(beatInterval); // 休符
+        
+        await UniTask.WaitForSeconds(beatInterval * 8); // 休符
+
+        if (_isFirst)
+        {
+            _isFirst = false;
+            Attack(); // 1回目だったらもう一度繰り返す
+        }
     }
 
     /// <summary>
@@ -122,11 +138,8 @@ public class EnemyController : MonoBehaviour
     /// </summary>
     private async UniTask SpawnBulletWithDelay(float delay)
     {
-        // UniTaskで遅延処理
-        await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
-    
-        // 弾を生成
-        SpawnBullet();
+        await UniTask.WaitForSeconds(delay); // UniTaskで遅延処理
+        SpawnBullet(); // 弾を生成
     }
 
     /// <summary>
@@ -134,7 +147,6 @@ public class EnemyController : MonoBehaviour
     /// </summary>
     private void SpawnBullet()
     {
-        
         // 弾をインスタンス化
         GameObject bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
     
