@@ -3,6 +3,9 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// プレイヤーの弾
+/// </summary>
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class Bullet : MonoBehaviour
 {
