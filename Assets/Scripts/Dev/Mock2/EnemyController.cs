@@ -159,10 +159,10 @@ public class EnemyController : MonoBehaviour
         }
     
         // 弾のパラメータを設定
-        bulletController.Initialize(_player, 10f, 5f); // プレイヤー、速度、追尾距離を設定
+        bulletController.Initialize(_player, transform); // プレイヤー、速度、追尾距離を設定
     
-        // 5秒後に弾を破棄
-        Destroy(bullet, 5f);
+        // 10秒後に弾を破棄
+        Destroy(bullet, 10f);
     }
     
     private void OnDestroy()

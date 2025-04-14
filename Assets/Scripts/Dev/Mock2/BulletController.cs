@@ -1,3 +1,5 @@
+
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -6,9 +8,12 @@ using UnityEngine;
 public class BulletController : MonoBehaviour
 {
     private Transform _player;
+    private Transform _enemy;
+    
     private float _speed = 50f;
-    private float _followDistance = 5f; // この距離以下になると追尾をやめて直線移動
+    private float _followDistance = 20f; // この距離以下になると追尾をやめて直線移動
     private bool _isFollowing = true;
+    private bool _isMoving = false;
     private Vector3 _direction;
     
     private float _spawnTime;
@@ -21,11 +26,10 @@ public class BulletController : MonoBehaviour
     /// <summary>
     /// 弾の初期化
     /// </summary>
-    public void Initialize(Transform player, float speed, float followDistance)
+    public void Initialize(Transform player, Transform enemy)
     {
         _player = player;
-        _speed = speed;
-        _followDistance = followDistance;
+        _enemy = enemy;
         _spawnTime = Time.time;
         
         // 初期の方向を設定
@@ -40,11 +44,24 @@ public class BulletController : MonoBehaviour
         
         // 弾の向きを進行方向に合わせる
         transform.forward = _direction;
+        
+        MoveMode().Forget();
     }
+
+    private async UniTask MoveMode()
+    {
+        await UniTask.WaitForSeconds(BEAT_INTERVAL * 8); // 8拍待って動く
+        _isMoving = true;
+    } 
     
     private void Update()
     {
         if (_player == null || _hasCollided) return;
+
+        if (!_isMoving)
+        {
+            transform.position = new Vector3(_enemy.transform.position.x, transform.position.y, transform.position.z);
+        }
         
         // プレイヤーとの距離を計算
         float distanceToPlayer = Vector3.Distance(transform.position, _player.position);
