@@ -1,5 +1,6 @@
 
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
@@ -11,19 +12,36 @@ public class BulletController : MonoBehaviour
     private Transform _enemy;
     private GameManager2 _gameManager;
     
-    private float _speed = 50f;
-    private float _followDistance = 20f; // この距離以下になると追尾をやめて直線移動
+    [Header("移動設定")]
+    [SerializeField] private float _speed = 50f;
+    [SerializeField] private float _followDistance = 20f; // この距離以下になると追尾をやめて直線移動
+    [SerializeField] private AnimationCurve _speedCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    
+    [Header("視覚エフェクト")]
+    [SerializeField] private TrailRenderer _trailRenderer;
+    [SerializeField] private Light _bulletLight;
+    [SerializeField] private Material _bulletMaterial;
+    
+    // 移動状態
     private bool _isFollowing = true;
     private bool _isMoving = false;
     private Vector3 _direction;
+    private float _currentSpeed;
     
+    // 時間管理
     private float _spawnTime;
+    private float _moveStartTime;
     private bool _hasCollided = false;
     private bool _hasUpdatedScore = false;
     
     // BPM情報
     private const float BPM = 200f;
     private const float BEAT_INTERVAL = 60f / BPM;
+    
+    // エフェクト用
+    private Effect _effectController;
+    private Color _originalEmissionColor;
+    private Sequence _pulseSequence;
     
     /// <summary>
     /// 弾の初期化
@@ -34,6 +52,7 @@ public class BulletController : MonoBehaviour
         _enemy = enemy;
         _spawnTime = Time.time;
         _gameManager = FindObjectOfType<GameManager2>();
+        _effectController = FindObjectOfType<Effect>();
         
         // 初期の方向を設定
         if (_player != null)
@@ -48,14 +67,99 @@ public class BulletController : MonoBehaviour
         // 弾の向きを進行方向に合わせる
         transform.forward = _direction;
         
-        MoveMode().Forget();
+        // トレイルレンダラーの設定
+        if (_trailRenderer != null)
+        {
+            _trailRenderer.emitting = false; // 最初は無効
+        }
+        
+        // 弾のライト設定
+        if (_bulletLight != null)
+        {
+            _bulletLight.intensity = 0f;
+        }
+        
+        // マテリアルのエミッションを保存
+        if (_bulletMaterial != null && _bulletMaterial.HasProperty("_EmissionColor"))
+        {
+            _originalEmissionColor = _bulletMaterial.GetColor("_EmissionColor");
+            _bulletMaterial.SetColor("_EmissionColor", _originalEmissionColor * 0.1f);
+        }
+        
+        StartBulletSequence().Forget();
     }
 
-    private async UniTask MoveMode()
+    private async UniTask StartBulletSequence()
     {
-        await UniTask.WaitForSeconds(BEAT_INTERVAL * 8); // 8拍待って動く
+        // 8拍待ってから動き始める
+        for (int i = 0; i < 8; i++)
+        {
+            // 1拍ごとのパルスエフェクト
+            PulseBullet();
+            await UniTask.Delay((int)(BEAT_INTERVAL * 1000));
+        }
+        
+        // 弾の発射
         _isMoving = true;
+        _moveStartTime = Time.time;
+        
+        // エフェクト開始
+        if (_trailRenderer != null)
+        {
+            _trailRenderer.emitting = true;
+        }
+        
+        // 発光エフェクト
+        if (_bulletMaterial != null && _bulletMaterial.HasProperty("_EmissionColor"))
+        {
+            DOTween.To(() => 0.1f, x => _bulletMaterial.SetColor("_EmissionColor", _originalEmissionColor * x), 2f, 0.5f)
+                .SetEase(Ease.OutQuad);
+        }
+        
+        // ライトを点灯
+        if (_bulletLight != null)
+        {
+            _bulletLight.DOIntensity(3f, 0.3f).SetEase(Ease.OutQuad);
+        }
+        
+        // パルス演出を停止
+        _pulseSequence?.Kill();
     } 
+    
+    /// <summary>
+    /// 弾のパルスエフェクト
+    /// </summary>
+    private void PulseBullet()
+    {
+        _pulseSequence?.Kill();
+        _pulseSequence = DOTween.Sequence();
+        
+        // スケールのパルス
+        _pulseSequence.Append(transform.DOScale(1.2f, BEAT_INTERVAL * 0.3f).SetEase(Ease.OutQuad));
+        _pulseSequence.Append(transform.DOScale(1f, BEAT_INTERVAL * 0.2f).SetEase(Ease.InQuad));
+        
+        // 光のパルス
+        if (_bulletLight != null)
+        {
+            _pulseSequence.Join(_bulletLight.DOIntensity(1f, BEAT_INTERVAL * 0.3f).SetEase(Ease.OutQuad));
+            _pulseSequence.Join(_bulletLight.DOIntensity(0.2f, BEAT_INTERVAL * 0.2f).SetEase(Ease.InQuad));
+        }
+        
+        // マテリアル発光のパルス
+        if (_bulletMaterial != null && _bulletMaterial.HasProperty("_EmissionColor"))
+        {
+            _pulseSequence.Join(
+                DOTween.To(() => 0.1f, 
+                    x => _bulletMaterial.SetColor("_EmissionColor", _originalEmissionColor * x), 
+                    0.5f, BEAT_INTERVAL * 0.3f).SetEase(Ease.OutQuad)
+            );
+            _pulseSequence.Join(
+                DOTween.To(() => 0.5f, 
+                    x => _bulletMaterial.SetColor("_EmissionColor", _originalEmissionColor * x), 
+                    0.1f, BEAT_INTERVAL * 0.2f).SetEase(Ease.InQuad)
+            );
+        }
+    }
     
     private void Update()
     {
@@ -79,6 +183,8 @@ public class BulletController : MonoBehaviour
             if (distanceToPlayer <= _followDistance)
             {
                 _isFollowing = false;
+                // 直線移動に切り替え時のエフェクト
+                PlayDirectionLockEffect().Forget();
             }
         }
 
@@ -88,8 +194,38 @@ public class BulletController : MonoBehaviour
             UpdateScoreAndCombo(_gameManager, EvaluationEnum.Safe);
         }
         
+        // 発射からの時間に基づいて速度を調整
+        float moveTime = Time.time - _moveStartTime;
+        float normalizedTime = Mathf.Clamp01(moveTime / 2f); // 2秒かけて加速
+        _currentSpeed = _speed * _speedCurve.Evaluate(normalizedTime);
+        
         // 弾を移動させる
         transform.position += _direction * _speed * Time.deltaTime;
+    }
+    
+    /// <summary>
+    /// 直線移動に切り替わる時のエフェクト
+    /// </summary>
+    private async UniTask PlayDirectionLockEffect()
+    {
+        // 方向固定時のフラッシュ
+        if (_bulletLight != null)
+        {
+            _bulletLight.DOIntensity(5f, 0.1f).SetEase(Ease.OutFlash);
+            await UniTask.Delay(100);
+            _bulletLight.DOIntensity(2f, 0.3f).SetEase(Ease.OutQuad);
+        }
+        
+        // トレイルの色を変更
+        if (_trailRenderer != null)
+        {
+            _trailRenderer.startColor = new Color(1f, 0.5f, 0f); // オレンジ色に
+        }
+        
+        // スケールを一瞬大きくして戻す
+        transform.DOScale(1.5f, 0.1f).SetEase(Ease.OutQuad);
+        await UniTask.Delay(100);
+        transform.DOScale(1f, 0.2f).SetEase(Ease.OutBack);
     }
     
     private void OnTriggerEnter(Collider other)
@@ -115,11 +251,8 @@ public class BulletController : MonoBehaviour
             // 衝突時のエフェクトなどを表示
             ShowHitEffect(evaluation);
             
-            // 弾を非表示にする
-            gameObject.SetActive(false);
-            
-            // 弾を破棄
-            Destroy(gameObject, 0.1f);
+            // 弾の消滅エフェクト
+            PlayDestroyEffect(evaluation).Forget();
         }
     }
     
@@ -188,13 +321,60 @@ public class BulletController : MonoBehaviour
     /// </summary>
     private void ShowHitEffect(EvaluationEnum evaluation)
     {
-        // エフェクトがあればここで表示
-        // Effect コンポーネントを探してテキスト更新
-        Effect effect = FindObjectOfType<Effect>();
-        if (effect != null)
+        if (_effectController != null)
         {
-            // EvaluationTextメソッドがprivateなので、リフレクションでアクセス
-            effect.EvaluationText(evaluation);
+            // 評価テキストを表示
+            _effectController.EvaluationText(evaluation);
+            
+            // カメラシェイク
+            if (evaluation == EvaluationEnum.Perfect)
+            {
+                _effectController.ShakeCamera(0.2f, 0.8f).Forget();
+            }
+            else if (evaluation == EvaluationEnum.Safe)
+            {
+                _effectController.ShakeCamera(0.1f, 0.3f).Forget();
+            }
         }
+    }
+    
+    /// <summary>
+    /// 弾の消滅エフェクト
+    /// </summary>
+    private async UniTask PlayDestroyEffect(EvaluationEnum evaluation)
+    {
+        // トレイルレンダラーを無効化
+        if (_trailRenderer != null)
+        {
+            _trailRenderer.emitting = false;
+        }
+        
+        // ライトのフェードアウト
+        if (_bulletLight != null)
+        {
+            _bulletLight.DOIntensity(0f, 0.2f);
+        }
+        
+        // 弾のメッシュをフェードアウト
+        if (_bulletMaterial != null && _bulletMaterial.HasProperty("_Color"))
+        {
+            Color originalColor = _bulletMaterial.GetColor("_Color");
+            DOTween.To(() => originalColor, x => _bulletMaterial.SetColor("_Color", x), 
+                new Color(originalColor.r, originalColor.g, originalColor.b, 0f), 0.3f);
+            
+            // エミッションも消す
+            if (_bulletMaterial.HasProperty("_EmissionColor"))
+            {
+                DOTween.To(() => 1f, x => _bulletMaterial.SetColor("_EmissionColor", _originalEmissionColor * x), 
+                    0f, 0.3f);
+            }
+        }
+        
+        // スケールを小さくして消える
+        transform.DOScale(0f, 0.5f).SetEase(Ease.InBack);
+        
+        // 少し待ってから破棄
+        await UniTask.Delay(500);
+        Destroy(gameObject);
     }
 }
