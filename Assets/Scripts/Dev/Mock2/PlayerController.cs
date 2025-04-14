@@ -1,4 +1,3 @@
-using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -118,7 +117,7 @@ public class PlayerController : MonoBehaviour
             if (!_isTransitioning)
             {
                 // 新しい経路への遷移開始
-                _startPosition = _rhythmBasedPosition; // アクションオフセットを含まない位置から計算
+                _startPosition = transform.position; // アクションオフセットを含まない位置から計算
                 _pathTransitionTimer = 0f;
                 _isTransitioning = true;
             }
@@ -129,9 +128,16 @@ public class PlayerController : MonoBehaviour
             // タイマー更新
             _pathTransitionTimer += Time.deltaTime;
             float t = Mathf.Clamp01(_pathTransitionTimer / oneBarDuration);
+    
+            // 現在位置から目標点への方向ベクトルを計算
+            Vector3 directionToTarget = (_currentPath.position - _startPosition).normalized;
         
-            // 線形補間で移動（リズムベースの位置のみ更新）
-            _rhythmBasedPosition = Vector3.Lerp(_startPosition, _currentPath.position, t);
+            // 現在の経過時間に基づいて進行距離を計算
+            float totalDistance = Vector3.Distance(_startPosition, _currentPath.position);
+            float currentDistance = totalDistance * t;
+        
+            // 新しい位置 = 開始位置 + (方向ベクトル × 距離)
+            _rhythmBasedPosition = _startPosition + (directionToTarget * currentDistance);
         
             // 一小節経過または十分近づいたら次の目標地点へ
             if (t >= 1.0f || Vector3.Distance(_rhythmBasedPosition, _currentPath.position) < 0.1f)
@@ -228,20 +234,10 @@ public class PlayerController : MonoBehaviour
             // 上方向への移動をオフセットとして計算
             Vector3 jumpOffset = transform.up * _jumpForce * Time.deltaTime;
             _actionOffset += jumpOffset;
-            
-            // 一定時間後に下降
-            if (_actionTimer > _slideDuration * 0.5f)
-            {
-                // 落下
-                _actionOffset -= transform.up * _jumpForce * 1.5f * Time.deltaTime;
-            }
+            _currentPath.position += jumpOffset;
             
             if (_actionTimer >= _slideDuration)
             {
-                // ジャンプ完了後、Y軸方向の位置を元に戻す（水平方向の移動は保持）
-                _actionOffset.y = 0;
-                _rhythmBasedPosition += new Vector3(_actionOffset.x, 0, _actionOffset.z);
-                _actionOffset = Vector3.zero;
                 _isJumping = false;
                 
                 // 移動遷移を新しい位置から再開始
@@ -304,6 +300,8 @@ public class PlayerController : MonoBehaviour
         
         _sideStepStartPos = transform.position;
         _sideStepEndPos = transform.position + sideDirection * _sideStepDistance;
+        
+        _currentPath.position +=  sideDirection * _sideStepDistance;
         
         Debug.Log("サイドステップ！" + (sideDirection == transform.right ? "右" : "左"));
     }
