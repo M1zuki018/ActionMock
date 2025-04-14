@@ -14379,13 +14379,13 @@ MonoBehaviour:
   - {fileID: 644812683}
   - {fileID: 1706555056}
   - {fileID: 22441971}
-  _jumpForce: 15
-  _sideStepDistance: 5
+  _jumpForce: 7
+  _sideStepDistance: 3
   _sideStepDuration: 0.3
   _slideDuration: 0.3
-  _slideSpeed: 15
+  _slideSpeed: 10
   _actionCooldown: 0.5
-  IsEnemyTrun:
+  IsEnemyTurn:
     value: 1
 --- !u!54 &1753115649
 Rigidbody:

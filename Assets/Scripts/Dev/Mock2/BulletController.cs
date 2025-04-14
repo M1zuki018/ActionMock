@@ -9,6 +9,7 @@ public class BulletController : MonoBehaviour
 {
     private Transform _player;
     private Transform _enemy;
+    private GameManager2 _gameManager;
     
     private float _speed = 50f;
     private float _followDistance = 20f; // この距離以下になると追尾をやめて直線移動
@@ -18,6 +19,7 @@ public class BulletController : MonoBehaviour
     
     private float _spawnTime;
     private bool _hasCollided = false;
+    private bool _hasUpdatedScore = false;
     
     // BPM情報
     private const float BPM = 200f;
@@ -31,6 +33,7 @@ public class BulletController : MonoBehaviour
         _player = player;
         _enemy = enemy;
         _spawnTime = Time.time;
+        _gameManager = FindObjectOfType<GameManager2>();
         
         // 初期の方向を設定
         if (_player != null)
@@ -77,6 +80,12 @@ public class BulletController : MonoBehaviour
             {
                 _isFollowing = false;
             }
+        }
+
+        if (!_hasUpdatedScore && transform.position.x - _player.position.x > 0)
+        {
+            _hasUpdatedScore = true;
+            UpdateScoreAndCombo(_gameManager, EvaluationEnum.Safe);
         }
         
         // 弾を移動させる
