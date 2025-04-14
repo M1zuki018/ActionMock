@@ -254,16 +254,6 @@ public class UIManager : MonoBehaviour
         // 曲の拍に基づいてアニメーションのタイミングを計算
         float musicPosition = Time.time - _gameStartTime;
         float beatPosition = (musicPosition / BEAT_INTERVAL) % 1.0f;
-        
-        // 特定のタイミングでアニメーションを実行（例：拍の始まり）
-        if (beatPosition < 0.05f || (beatPosition > 0.5f && beatPosition < 0.55f))
-        {
-            // 例：スコアパネルの軽いアニメーション
-            if (_scorePanel != null && !DOTween.IsTweening(_scorePanel))
-            {
-                _scorePanel.DOPunchScale(Vector3.one * 0.05f, 0.1f, 1, 0.5f);
-            }
-        }
     }
     
     private void OnDestroy()

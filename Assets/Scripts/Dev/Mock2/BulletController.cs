@@ -286,7 +286,7 @@ public class BulletController : MonoBehaviour
         }
         else
         {
-            return EvaluationEnum.Safe;
+            return EvaluationEnum.Miss;
         }
     }
     
