@@ -5,8 +5,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField,Comment("前進するスピ―ド")] private float _forwardSpeed = 10f;
-    [SerializeField,Comment("ジャンプにかける秒数")] private float _jumpDuration = 3f;
+    [SerializeField,Comment("前進するスピ―ド")] private float _moveSpeed = 15f; 
     [SerializeField] private Transform[] _paths; // Prop
     
     private Animator _animator;
