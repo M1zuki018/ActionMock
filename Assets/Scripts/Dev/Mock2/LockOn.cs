@@ -8,6 +8,7 @@ using UnityEngine;
 public class LockOn : MonoBehaviour
 {
     [SerializeField] private GameManager2 _gameManager2;
+    [SerializeField] private PlayerController _playerController;
     [SerializeField] private Transform _lockOnIcon;
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private Transform _mazzle;
@@ -41,7 +42,7 @@ public class LockOn : MonoBehaviour
         Vector3 screenPosition = _camera.WorldToScreenPoint(_currentTarget.position);
         _lockOnIcon.transform.position = screenPosition; // ターゲットアイコンを現在のターゲットに合わせる
         
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !_playerController.IsEnemyTurn.Value)
         {
             TargetBroken();
         }

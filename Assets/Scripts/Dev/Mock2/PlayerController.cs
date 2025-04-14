@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _actionCooldown = 0.5f;
     private float _lastActionTime = -10f; // 初期値を負の値にして、ゲーム開始直後からアクションができるようにする
 
-    [FormerlySerializedAs("IsEnemyTrun")] public ReactiveProperty<bool> IsEnemyTurn = new ReactiveProperty<bool>(true);
+    public ReactiveProperty<bool> IsEnemyTurn = new ReactiveProperty<bool>(true);
     
     private Animator _animator;
     private Rigidbody _rb;
