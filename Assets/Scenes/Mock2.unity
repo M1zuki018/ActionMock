@@ -6298,6 +6298,8 @@ MonoBehaviour:
   _lockOnIcon: {fileID: 2144520000}
   _bulletPrefab: {fileID: 2383282923278351472, guid: cab345b14454d3d41a5a9dd8625ad8c4, type: 3}
   _mazzle: {fileID: 1753115645}
+  _shotSount: {fileID: 8300000, guid: b29948aedc46b1849b75e8d4fca22f46, type: 3}
+  _seSource: {fileID: 1438632744}
 --- !u!114 &693366223
 MonoBehaviour:
   m_ObjectHideFlags: 0

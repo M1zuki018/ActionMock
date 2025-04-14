@@ -12,6 +12,8 @@ public class LockOn : MonoBehaviour
     [SerializeField] private Transform _lockOnIcon;
     [SerializeField] private GameObject _bulletPrefab;
     [SerializeField] private Transform _mazzle;
+    [SerializeField] private AudioClip _shotSount;
+    [SerializeField] private AudioSource _seSource;
     private List<Transform> _allTargets = new List<Transform>();
     private Transform _currentTarget; // 現在のターゲット
     private int _targetIndex = 0;
@@ -44,6 +46,7 @@ public class LockOn : MonoBehaviour
         
         if (Input.GetMouseButtonDown(0) && !_playerController.IsEnemyTurn.Value)
         {
+            _seSource.PlayOneShot(_shotSount); // 弾を撃つSE再生
             TargetBroken();
         }
     }
