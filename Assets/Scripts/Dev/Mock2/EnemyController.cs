@@ -1,4 +1,7 @@
+using System;
+using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemyController : MonoBehaviour
 {
@@ -8,17 +11,35 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float _randomMovementSpeed = 2f;
     [SerializeField] private float _minDistanceFromPlayer = 40f;
     [SerializeField] private float _maxDistanceFromPlayer = 50f;
+    [SerializeField] private GameObject _bulletPrefab;
     
     private Vector3 _randomOffset;
     private float _randomTimer;
+    private PlayerController _playerCon;
+    private IDisposable _playerDisposable;
+
+    private void Awake()
+    {
+        _playerCon = _player.GetComponent<PlayerController>();
+    }
     
     private void Start()
     {
-        // 初期のランダムオフセットを設定
-        GenerateNewRandomOffset();
+        _playerDisposable = _playerCon.IsEnemyTrun.Subscribe(_ => Attack()); // 自分のターンの時に攻撃を行う
+        GenerateNewRandomOffset(); // 初期のランダムオフセットを設定
     }
     
     private void Update()
+    {
+        Move();
+    }
+
+    #region 移動
+
+    /// <summary>
+    /// 移動処理
+    /// </summary>
+    private void Move()
     {
         // ランダムオフセットを定期的に更新
         _randomTimer -= Time.deltaTime;
@@ -55,7 +76,7 @@ public class EnemyController : MonoBehaviour
             _moveSpeed * speedMultiplier * Time.deltaTime
         );
     }
-    
+
     /// <summary>
     /// 移動地点を設定する
     /// </summary>
@@ -68,5 +89,27 @@ public class EnemyController : MonoBehaviour
         var z = rand < 5 ? rand : 5f; // 右側の限界点
         
         _randomOffset = new Vector3(x, y, z);
+    }
+
+    #endregion
+    
+
+    /// <summary>
+    /// 攻撃
+    /// </summary>
+    private void Attack()
+    {
+        // 敵はBPM200の拍に合うように弾を発射する
+        // １・２・３・休、１・２・３・休、2小節使って弾を召喚する
+        // 3小節目、4小節目で１・２・３・休、１・２・３・休のタイミングでプレイヤーが回避できるように弾が飛んでくる
+        // ここで拍に合うように回避出来たか判定をとる。Perfect/Safe/Missの3段階とする
+        // Perfectが拍にかなり正確にあっていた状態。Missはぶつかった場合。それ以外は全てSafeとする
+        // 弾はプレイヤーにある程度近付くまでは追尾。そこからは直線に飛ぶようにする
+        // オブジェクトプールを使わなくていいので、時間でDestroyしてほしい
+    }
+
+    private void OnDestroy()
+    {
+        _playerDisposable?.Dispose();
     }
 }

@@ -65,6 +65,9 @@ public class LockOn : MonoBehaviour
     {
         _gameManager2.Score.Value += 100;
         
+        return;
+        
+        // 一次的にコメントアウト中
         _targetIndex++;
         if (_targetIndex < _allTargets.Count)
         {
