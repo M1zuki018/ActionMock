@@ -264,6 +264,7 @@ public class PlayerController : MonoBehaviour
         if (_currentPathIndex % 8 == 7)
         {
             IsEnemyTurn.Value = !IsEnemyTurn.Value; // 回避パートとアタックパートを入れ替える
+            _animator.SetBool("Attack", !IsEnemyTurn.Value);
             Debug.LogWarning(IsEnemyTurn.Value ? "敵のターン" : "自分のターン");
         }
             
