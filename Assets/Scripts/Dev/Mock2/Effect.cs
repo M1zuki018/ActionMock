@@ -16,6 +16,7 @@ public class Effect : MonoBehaviour
     [SerializeField] private Text _evaluationText;
     
     private IDisposable _disposable;
+    private IDisposable _comboSubscribe;
     
     private void Start()
     {
@@ -27,13 +28,13 @@ public class Effect : MonoBehaviour
         });
         
         // コンボ数の書き換え　購読解除処理を追加して
-        _gameManager.ComboCount.Subscribe(combo => _comboText.text = combo.ToString("00"));
+        _comboSubscribe = _gameManager.ComboCount.Subscribe(combo => _comboText.text = combo.ToString("00"));
     }
 
     /// <summary>
     /// 評価のテキストを書き換える。適切なメソッドから使ってほしい
     /// </summary>
-    private void EvaluationText(EvaluationEnum evaluation)
+    public void EvaluationText(EvaluationEnum evaluation)
     {
         if (evaluation == EvaluationEnum.Perfect)
         {
@@ -54,5 +55,6 @@ public class Effect : MonoBehaviour
     private void OnDestroy()
     {
         _disposable?.Dispose();
+        _comboSubscribe?.Dispose();
     }
 }

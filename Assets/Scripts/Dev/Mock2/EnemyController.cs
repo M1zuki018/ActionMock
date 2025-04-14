@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -97,17 +98,61 @@ public class EnemyController : MonoBehaviour
     /// <summary>
     /// 攻撃
     /// </summary>
-    private void Attack()
+    private async void Attack()
     {
-        // 敵はBPM200の拍に合うように弾を発射する
-        // １・２・３・休、１・２・３・休、2小節使って弾を召喚する
-        // 3小節目、4小節目で１・２・３・休、１・２・３・休のタイミングでプレイヤーが回避できるように弾が飛んでくる
-        // ここで拍に合うように回避出来たか判定をとる。Perfect/Safe/Missの3段階とする
-        // Perfectが拍にかなり正確にあっていた状態。Missはぶつかった場合。それ以外は全てSafeとする
-        // 弾はプレイヤーにある程度近付くまでは追尾。そこからは直線に飛ぶようにする
-        // オブジェクトプールを使わなくていいので、時間でDestroyしてほしい
+        // BPM200での拍の間隔を計算 (1拍 = 60/200 = 0.3秒)
+        float beatInterval = 60f / 200f;
+    
+        // 弾の生成タイミングを設定（最初の2小節で弾を召喚）
+        // 1小節目: 1・2・3・休
+        await SpawnBulletWithDelay(beatInterval * 0); // 1拍目
+        await SpawnBulletWithDelay(beatInterval * 1); // 2拍目
+        await SpawnBulletWithDelay(beatInterval * 2); // 3拍目
+        // 休符
+    
+        // 2小節目: 1・2・3・休
+        await SpawnBulletWithDelay(beatInterval * 4); // 1拍目
+        await SpawnBulletWithDelay(beatInterval * 5); // 2拍目
+        await SpawnBulletWithDelay(beatInterval * 6); // 3拍目
+        // 休符
     }
 
+    /// <summary>
+    /// 指定した遅延時間後に弾を生成する
+    /// </summary>
+    private async UniTask SpawnBulletWithDelay(float delay)
+    {
+        // UniTaskで遅延処理
+        await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: this.GetCancellationTokenOnDestroy());
+    
+        // 弾を生成
+        SpawnBullet();
+    }
+
+    /// <summary>
+    /// 弾を生成する
+    /// </summary>
+    private void SpawnBullet()
+    {
+        
+        // 弾をインスタンス化
+        GameObject bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
+    
+        // BulletControllerをアタッチ
+        BulletController bulletController = bullet.GetComponent<BulletController>();
+        if (bulletController == null)
+        {
+            // BulletControllerがない場合は追加
+            bulletController = bullet.AddComponent<BulletController>();
+        }
+    
+        // 弾のパラメータを設定
+        bulletController.Initialize(_player, 10f, 5f); // プレイヤー、速度、追尾距離を設定
+    
+        // 5秒後に弾を破棄
+        Destroy(bullet, 5f);
+    }
+    
     private void OnDestroy()
     {
         _playerDisposable?.Dispose();
