@@ -35,6 +35,11 @@ public class PlayerController : MonoBehaviour
     private Vector3 _sideStepEndPos;
     private float _actionTimer = 0f;
 
+    // アクション中の位置オフセット
+    private Vector3 _actionOffset = Vector3.zero;
+    // リズムベースの移動計算用の位置（アクションによる位置変化を含まない）
+    private Vector3 _rhythmBasedPosition;
+
 
     private void Awake()
     {
@@ -42,6 +47,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         
         _currentPath = _paths[_currentPathIndex];
+        _rhythmBasedPosition = transform.position;
     }
 
     private void Update()
@@ -49,27 +55,24 @@ public class PlayerController : MonoBehaviour
         // 入力処理
         ProcessInput();
         
+        // リズムベースの位置計算（常に行う）
+        UpdateRhythmBasedPosition();
+        
         // アクションの更新処理
         UpdateActionStates();
         
-        // アクション中でなければ通常移動を処理
-        if (!_isJumping && !_isSidestepping && !_isSliding)
+        // 最終的な位置を設定
+        ApplyFinalPosition();
+        
+        // 常に進行方向を向く
+        if (_currentPath != null)
         {
-            // 自動前進
-            MoveTowardPath();
-        }
-        else
-        {
-            // アクション中でも常に次のパスの方向を向く
-            if (_currentPath != null)
+            Vector3 directionToNode = (_currentPath.position - transform.position).normalized;
+            directionToNode.y = 0f;
+            if (directionToNode != Vector3.zero)
             {
-                Vector3 directionToNode = (_currentPath.position - transform.position).normalized;
-                directionToNode.y = 0f;
-                if (directionToNode != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(directionToNode);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2f * Time.deltaTime);
-                }
+                Quaternion targetRotation = Quaternion.LookRotation(directionToNode);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2f * Time.deltaTime);
             }
         }
     }
@@ -100,72 +103,16 @@ public class PlayerController : MonoBehaviour
     }
     
     /// <summary>
-    /// アクション状態の更新
+    /// リズムベースの位置を更新する（BPMに同期した移動）
     /// </summary>
-    private void UpdateActionStates()
+    private void UpdateRhythmBasedPosition()
     {
-        // サイドステップ処理
-        if (_isSidestepping)
-        {
-            _actionTimer += Time.deltaTime;
-            float t = Mathf.Clamp01(_actionTimer / _sideStepDuration);
-            
-            // イージング関数を適用して滑らかな動きに
-            float smoothT = Mathf.SmoothStep(0, 1, t);
-            transform.position = Vector3.Lerp(_sideStepStartPos, _sideStepEndPos, smoothT);
-            
-            if (t >= 1.0f)
-            {
-                _isSidestepping = false;
-                _isTransitioning = false;
-            }
-        }
-        
-        // スライディング処理
-        if (_isSliding)
-        {
-            _actionTimer += Time.deltaTime;
-            
-            // 前方に加速移動
-            transform.position += transform.forward * _slideSpeed * Time.deltaTime;
-            
-            if (_actionTimer >= _slideDuration)
-            {
-                _isSliding = false;
-                _isTransitioning = false;
-            }
-        }
-        
-        // ジャンプ処理
-        if (_isJumping)
-        {
-            _actionTimer += Time.deltaTime;
-            
-            // 上に力を加える
-            transform.position += transform.up * _slideSpeed * Time.deltaTime;
-            
-            if (_actionTimer >= _slideDuration)
-            {
-                _isJumping = false;
-                _isTransitioning = false;
-            }
-        }
-    }
-    
-
-    /// <summary>
-    /// 目的地への移動処理
-    /// </summary>
-    private void MoveTowardPath()
-    {
-        // 自動前進
-        // TODO: フローゾーンなどで速度変化が突く場合ここでスピードを変える分岐を書く
         if (_currentPath != null)
         {
             if (!_isTransitioning)
             {
                 // 新しい経路への遷移開始
-                _startPosition = transform.position;
+                _startPosition = _rhythmBasedPosition; // アクションオフセットを含まない位置から計算
                 _pathTransitionTimer = 0f;
                 _isTransitioning = true;
             }
@@ -177,25 +124,104 @@ public class PlayerController : MonoBehaviour
             _pathTransitionTimer += Time.deltaTime;
             float t = Mathf.Clamp01(_pathTransitionTimer / oneBarDuration);
         
-            // 線形補間で移動
-            transform.position = Vector3.Lerp(_startPosition, _currentPath.position, t);
-        
-            // 回転
-            Vector3 directionToNode = (_currentPath.position - transform.position).normalized;
-            directionToNode.y = 0f;
-            if (directionToNode != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(directionToNode);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2f * Time.deltaTime);
-            }
+            // 線形補間で移動（リズムベースの位置のみ更新）
+            _rhythmBasedPosition = Vector3.Lerp(_startPosition, _currentPath.position, t);
         
             // 一小節経過または十分近づいたら次の目標地点へ
-            if (t >= 1.0f || Vector3.Distance(transform.position, _currentPath.position) < 0.1f)
+            if (t >= 1.0f || Vector3.Distance(_rhythmBasedPosition, _currentPath.position) < 0.1f)
             {
                 NextPath();
                 _isTransitioning = false;
             }
         }
+    }
+    
+    /// <summary>
+    /// アクションによる位置の変化を更新
+    /// </summary>
+    private void UpdateActionStates()
+    {
+        // アクション実行中でなければオフセットをリセット
+        if (!_isJumping && !_isSidestepping && !_isSliding)
+        {
+            _actionOffset = Vector3.zero;
+            return;
+        }
+        
+        // サイドステップ処理
+        if (_isSidestepping)
+        {
+            _actionTimer += Time.deltaTime;
+            float t = Mathf.Clamp01(_actionTimer / _sideStepDuration);
+            
+            // イージング関数を適用して滑らかな動きに
+            float smoothT = Mathf.SmoothStep(0, 1, t);
+            
+            // サイドステップのオフセットを計算
+            Vector3 sideStepOffset = Vector3.Lerp(Vector3.zero, _sideStepEndPos - _sideStepStartPos, smoothT);
+            _actionOffset = sideStepOffset;
+            
+            if (t >= 1.0f)
+            {
+                // サイドステップ完了後、新しい位置をリズムベースの位置に反映
+                _rhythmBasedPosition += _actionOffset;
+                _actionOffset = Vector3.zero;
+                _isSidestepping = false;
+            }
+        }
+        
+        // スライディング処理
+        if (_isSliding)
+        {
+            _actionTimer += Time.deltaTime;
+            
+            // スライディングによる前方への移動をオフセットとして計算
+            Vector3 slideOffset = transform.forward * _slideSpeed * Time.deltaTime;
+            _actionOffset += slideOffset;
+            
+            if (_actionTimer >= _slideDuration)
+            {
+                // スライディング完了後、新しい位置をリズムベースの位置に反映
+                _rhythmBasedPosition += _actionOffset;
+                _actionOffset = Vector3.zero;
+                _isSliding = false;
+            }
+        }
+        
+        // ジャンプ処理
+        if (_isJumping)
+        {
+            _actionTimer += Time.deltaTime;
+            
+            // 上方向への移動をオフセットとして計算
+            Vector3 jumpOffset = transform.up * _jumpForce * Time.deltaTime;
+            _actionOffset += jumpOffset;
+            
+            // 一定時間後に下降
+            if (_actionTimer > _slideDuration * 0.5f)
+            {
+                // 落下
+                _actionOffset -= transform.up * _jumpForce * 1.5f * Time.deltaTime;
+            }
+            
+            if (_actionTimer >= _slideDuration)
+            {
+                // ジャンプ完了後、Y軸方向の位置を元に戻す（水平方向の移動は保持）
+                _actionOffset.y = 0;
+                _rhythmBasedPosition += new Vector3(_actionOffset.x, 0, _actionOffset.z);
+                _actionOffset = Vector3.zero;
+                _isJumping = false;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 最終的な位置を適用する
+    /// </summary>
+    private void ApplyFinalPosition()
+    {
+        // リズムベースの位置 + アクションによるオフセット = 最終位置
+        transform.position = _rhythmBasedPosition + _actionOffset;
     }
 
     /// <summary>
@@ -215,9 +241,11 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Jump()
     {
-        // ジャンプ状態にする
         _isJumping = true;
+        _actionTimer = 0f;
         _lastActionTime = Time.time;
+        
+        Debug.Log("ジャンプ！");
     }
     
     /// <summary>
@@ -235,12 +263,7 @@ public class PlayerController : MonoBehaviour
         _sideStepStartPos = transform.position;
         _sideStepEndPos = transform.position + sideDirection * _sideStepDistance;
         
-        // アニメーター設定があれば、サイドステップアニメを再生
-        if (_animator != null)
-        {
-            // _animator.SetTrigger("SideStep");
-            Debug.Log("サイドステップ！" + (sideDirection == transform.right ? "右" : "左"));
-        }
+        Debug.Log("サイドステップ！" + (sideDirection == transform.right ? "右" : "左"));
     }
     
     /// <summary>
@@ -251,5 +274,7 @@ public class PlayerController : MonoBehaviour
         _isSliding = true;
         _actionTimer = 0f;
         _lastActionTime = Time.time;
+        
+        Debug.Log("スライディング！");
     }
 }
