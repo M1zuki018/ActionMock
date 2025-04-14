@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField,Comment("前進するスピ―ド")] private float _forwardSpeed = 10f;
     [SerializeField,Comment("ジャンプにかける秒数")] private float _jumpDuration = 3f;
     [SerializeField] private Transform[] _paths; // Prop
-    [SerializeField] private EnemyGenerator _enemyGenerator;
     
     private Animator _animator;
     private Rigidbody _rb;
@@ -53,6 +52,7 @@ public class PlayerController : MonoBehaviour
         
             // 回転
             Vector3 directionToNode = (_currentPath.position - transform.position).normalized;
+            directionToNode.y = 0f;
             if (directionToNode != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(directionToNode);
@@ -77,11 +77,6 @@ public class PlayerController : MonoBehaviour
         if (_currentPathIndex < _paths.Length)
         {
             _currentPath = _paths[_currentPathIndex];
-        }
-
-        if (_currentPathIndex % 4 == 0)
-        {
-            _enemyGenerator.Generate(_paths[_currentPathIndex], 4);
         }
     }
 }
