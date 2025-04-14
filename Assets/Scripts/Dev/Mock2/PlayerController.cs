@@ -1,4 +1,7 @@
+using System;
+using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// Playerの動きを制御する
@@ -16,6 +19,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _slideSpeed = 20f;
     [SerializeField] private float _actionCooldown = 0.5f;
     private float _lastActionTime = -10f; // 初期値を負の値にして、ゲーム開始直後からアクションができるようにする
+
+    public ReactiveProperty<bool> IsEnemyTrun = new ReactiveProperty<bool>(true);
     
     private Animator _animator;
     private Rigidbody _rb;
@@ -137,6 +142,26 @@ public class PlayerController : MonoBehaviour
     }
     
     /// <summary>
+    /// アクション後に移動遷移を初期化する
+    /// </summary>
+    private void ResetPathTransition()
+    {
+        // 現在の位置から新しく補間を開始
+        _startPosition = _rhythmBasedPosition;
+        _pathTransitionTimer = 0f;
+        _isTransitioning = true;
+        
+        // タイマーをBPMに合わせた適切な位置に調整
+        // これにより、アクション後も音楽のビートに合わせた移動を維持
+        float oneBarDuration = 60f / 200f * 4f;
+        float beatFraction = Mathf.Repeat(Time.time, oneBarDuration) / oneBarDuration;
+        _pathTransitionTimer = beatFraction * oneBarDuration;
+        
+        // デバッグログ
+        Debug.Log($"移動を再開始 - 現在位置: {_rhythmBasedPosition}, 目標: {_currentPath.position}, ビート位置: {beatFraction:F2}");
+    }
+    
+    /// <summary>
     /// アクションによる位置の変化を更新
     /// </summary>
     private void UpdateActionStates()
@@ -167,6 +192,9 @@ public class PlayerController : MonoBehaviour
                 _rhythmBasedPosition += _actionOffset;
                 _actionOffset = Vector3.zero;
                 _isSidestepping = false;
+                
+                // 移動遷移を新しい位置から再開始
+                ResetPathTransition();
             }
         }
         
@@ -185,6 +213,9 @@ public class PlayerController : MonoBehaviour
                 _rhythmBasedPosition += _actionOffset;
                 _actionOffset = Vector3.zero;
                 _isSliding = false;
+                
+                // 移動遷移を新しい位置から再開始
+                ResetPathTransition();
             }
         }
         
@@ -211,6 +242,9 @@ public class PlayerController : MonoBehaviour
                 _rhythmBasedPosition += new Vector3(_actionOffset.x, 0, _actionOffset.z);
                 _actionOffset = Vector3.zero;
                 _isJumping = false;
+                
+                // 移動遷移を新しい位置から再開始
+                ResetPathTransition();
             }
         }
     }
@@ -229,6 +263,13 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void NextPath()
     {
+        // 8小節ごとにターン切り替え
+        if (_currentPathIndex % 8 == 7)
+        {
+            IsEnemyTrun.Value = !IsEnemyTrun.Value; // 回避パートとアタックパートを入れ替える
+            Debug.LogWarning(IsEnemyTrun.Value ? "敵のターン" : "自分のターン");
+        }
+            
         _currentPathIndex++;
         if (_currentPathIndex < _paths.Length)
         {

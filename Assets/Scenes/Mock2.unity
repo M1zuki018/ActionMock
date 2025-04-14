@@ -14366,11 +14366,11 @@ MonoBehaviour:
   - {fileID: 644812683}
   - {fileID: 1706555056}
   - {fileID: 22441971}
-  _jumpForce: 500
+  _jumpForce: 15
   _sideStepDistance: 5
   _sideStepDuration: 0.3
-  _slideDuration: 0.5
-  _slideSpeed: 35
+  _slideDuration: 0.3
+  _slideSpeed: 15
   _actionCooldown: 0.5
 --- !u!54 &1753115649
 Rigidbody:
