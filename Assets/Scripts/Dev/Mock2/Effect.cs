@@ -49,7 +49,7 @@ public class Effect : MonoBehaviour
             _evaluationText.color = Color.gray;
         }
         
-        _comboText.text = evaluation.ToString();
+        _evaluationText.text = evaluation.ToString();
     }
 
     private void OnDestroy()
