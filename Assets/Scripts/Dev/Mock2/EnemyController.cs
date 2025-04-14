@@ -56,6 +56,9 @@ public class EnemyController : MonoBehaviour
         );
     }
     
+    /// <summary>
+    /// 移動地点を設定する
+    /// </summary>
     private void GenerateNewRandomOffset()
     {
         var rand = Random.Range(-_randomMovementRange, _randomMovementRange);
