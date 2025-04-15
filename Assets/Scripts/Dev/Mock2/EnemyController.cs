@@ -109,8 +109,7 @@ public class EnemyController : MonoBehaviour
     /// </summary>
     private async void Attack()
     {
-        // BPM200での拍の間隔を計算 (1拍 = 60/200 = 0.3秒)
-        float beatInterval = 60f / 200f;
+        float beatInterval = 60f / GameConst.BPM;
     
         // 弾の生成タイミングを設定（最初の2小節で弾を召喚）
         // 1小節目: 1・2・3・休

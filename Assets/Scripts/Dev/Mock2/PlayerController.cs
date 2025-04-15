@@ -1,6 +1,5 @@
 using UniRx;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -123,7 +122,7 @@ public class PlayerController : MonoBehaviour
             }
         
             // 240BPMの一小節は1秒
-            float oneBarDuration = 60f / 200f * 4f;  // 1分 / BPM * 4拍
+            float oneBarDuration = 60f / GameConst.BPM * 4f;  // 1分 / BPM * 4拍
         
             // タイマー更新
             _pathTransitionTimer += Time.deltaTime;
@@ -160,7 +159,7 @@ public class PlayerController : MonoBehaviour
         
         // タイマーをBPMに合わせた適切な位置に調整
         // これにより、アクション後も音楽のビートに合わせた移動を維持
-        float oneBarDuration = 60f / 200f * 4f;
+        float oneBarDuration = 60f / GameConst.BPM * 4f;
         float beatFraction = Mathf.Repeat(Time.time, oneBarDuration) / oneBarDuration;
         _pathTransitionTimer = beatFraction * oneBarDuration;
         

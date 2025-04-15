@@ -35,8 +35,7 @@ public class BulletController : MonoBehaviour
     private bool _hasUpdatedScore = false;
     
     // BPM情報
-    private const float BPM = 200f;
-    private const float BEAT_INTERVAL = 60f / BPM;
+    private const float BEAT_INTERVAL = 60f / GameConst.BPM;
     
     // エフェクト用
     private Effect _effectController;

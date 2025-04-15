@@ -34,8 +34,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Ease _outEase = Ease.InBack;
     
     // BPM情報
-    private const float BPM = 200f;
-    private const float BEAT_INTERVAL = 60f / BPM;
+    private const float BEAT_INTERVAL = 60f / GameConst.BPM;
     
     // Tweenシーケンス管理
     private Dictionary<string, Sequence> _tweens = new Dictionary<string, Sequence>();
