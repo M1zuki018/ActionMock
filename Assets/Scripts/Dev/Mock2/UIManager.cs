@@ -164,16 +164,26 @@ public class UIManager : MonoBehaviour
     private async UniTask ShowTurnIndicator(bool isEnemyTurn)
     {
         if (_turnIndicator == null) return;
-        
+    
+        // カメラコントローラーを取得
+        CameraController2 cameraController = FindObjectOfType<CameraController2>();
+    
         // 既存のアニメーションをキャンセル
         if (_tweens.TryGetValue("turnIndicator", out Sequence oldSeq))
         {
             oldSeq.Kill();
         }
-        
+    
         // テキストと色を設定
         _turnIndicator.text = isEnemyTurn ? "回避!" : "アタック!";
         _turnIndicator.color = isEnemyTurn ? _enemyTurnColor : _playerTurnColor;
+    
+        // カメラエフェクト
+        if (cameraController != null)
+        {
+            // ターン切り替え時のFOV変更
+            cameraController.ChangeFOV(isEnemyTurn ? 70f : 60f, 0.7f).Forget();
+        }
         
         // アニメーションシーケンス
         Sequence sequence = DOTween.Sequence();

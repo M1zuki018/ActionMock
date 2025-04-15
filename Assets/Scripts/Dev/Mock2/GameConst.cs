@@ -1,4 +1,4 @@
 public static class GameConst
 {
-    public const float BPM = 200f;
+    public const float BPM = 240f;
 }

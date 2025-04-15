@@ -8633,8 +8633,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 4c76838d653327e4e93ea76c6c339d76, type: 3}
-  m_Resource: {fileID: 8300000, guid: 4c76838d653327e4e93ea76c6c339d76, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 77da3868d5a63154d91aa96de44b801c, type: 3}
+  m_Resource: {fileID: 8300000, guid: 77da3868d5a63154d91aa96de44b801c, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.399
   m_Pitch: 1
@@ -8747,7 +8747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd2db1f4bf93fa4fafc2010ea809344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startTime: 40.9
+  _startTime: 52
   _seSource: {fileID: 1438632744}
 --- !u!4 &1010731994 stripped
 Transform:
