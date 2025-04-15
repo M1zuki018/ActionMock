@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -18,7 +19,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _slideSpeed = 20f;
     [SerializeField] private float _actionCooldown = 0.5f;
     private float _lastActionTime = -10f; // 初期値を負の値にして、ゲーム開始直後からアクションができるようにする
-
+    
+    [Header("音")]
+    [SerializeField] private AudioClip _jumpSound;
+    
     public ReactiveProperty<bool> IsEnemyTurn = new ReactiveProperty<bool>(true);
     
     private Animator _animator;
@@ -282,6 +286,17 @@ public class PlayerController : MonoBehaviour
         _isJumping = true;
         _actionTimer = 0f;
         _lastActionTime = Time.time;
+        
+        // カメラエフェクト追加
+        CameraController2 cameraController = FindObjectOfType<CameraController2>();
+        if (cameraController != null)
+        {
+            // FOVを広げてジャンプ感を演出
+            cameraController.ChangeFOV(75f, 0.3f).Forget();
+        }
+    
+        // 効果音再生
+        AudioController.Instance.PlaySE(_jumpSound);
         
         Debug.Log("ジャンプ！");
     }

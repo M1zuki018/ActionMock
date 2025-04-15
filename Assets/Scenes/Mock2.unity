@@ -8748,6 +8748,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _startTime: 40.9
+  _seSource: {fileID: 1438632744}
 --- !u!4 &1010731994 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5485682775060013994, guid: 24ad189905c64de479a8a1b241bc7294, type: 3}
@@ -14630,6 +14631,7 @@ MonoBehaviour:
   _slideDuration: 0.3
   _slideSpeed: 10
   _actionCooldown: 0.5
+  _jumpSound: {fileID: 8300000, guid: ca4df44551fc3fe4faece29d1d763c25, type: 3}
   IsEnemyTurn:
     value: 1
 --- !u!54 &1753115649
