@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5561391943093927528}
   - component: {fileID: 996304754725641764}
+  - component: {fileID: 567401844381940911}
   m_Layer: 0
   m_Name: Mock3_Enemy
   m_TagString: Untagged
@@ -55,6 +56,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &567401844381940911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9001897524184042730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0c940d17087b754cb89c968cbdafe94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 100
+  _hitSound: {fileID: 8300000, guid: ca4df44551fc3fe4faece29d1d763c25, type: 3}
+  _deathSound: {fileID: 8300000, guid: ca4df44551fc3fe4faece29d1d763c25, type: 3}
+  _invincibilityTime: 0.2
+  _weakPoints: []
+  _weakPointDamageMultiplier: 1.5
 --- !u!1001 &7480024638392672303
 PrefabInstance:
   m_ObjectHideFlags: 0
